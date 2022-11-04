@@ -22,35 +22,40 @@ provider:
   environment:
     USERS_TABLE: ${self:custom.tableName}
     STAGE: ${self:provider.stage}    
+    TABLE_CARDS: ${self:custom.tableName}
 
 functions:
   api:
     handler: handler.handler
     events:
       - httpApi: '*'
+    #environment:
+      #TABLE_CARDS: ${self:custom.tableName}
+  task:
+    handler: task.main
+    events:
+      - schedule: cron(14 14 * * ? *)
+
     environment:
       MGC_COLLECTIONS: 'IKO;GRN;ISD'
       URL_API: https://api.scryfall.com/cards/search
-  task:
-    handler: handler.task
-    event:
-      - httpApi:
-          path: /task
-          method: get
-    environment:
-      MGC_COLLECTIONS: 'IKO;GRN;ISD'
+      #TABLE_CARDS: ${self:custom.tableName}
 
 resources:
   Resources:
-    UsersTable:
+    cardTable:
       Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:
-          - AttributeName: userId
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: set
             AttributeType: S
         KeySchema:
-          - AttributeName: userId
+          - AttributeName: id
             KeyType: HASH
+          - AttributeName: set
+            KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.tableName}
         
@@ -66,7 +71,7 @@ custom:
       migrate: true
       seed: true
       convertEmptyValues: true
-  tableName: 'users-table-${sls:stage}'
+  tableName: 'cards-${sls:stage}'
 
 plugins:
   - serverless-dynamodb-local

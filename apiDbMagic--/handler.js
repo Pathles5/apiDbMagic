@@ -1,7 +1,9 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 const AWS = require('aws-sdk');
 const express = require('express');
 const serverless = require('serverless-http');
-const apiMagic = require('./controller/apiMagic');
+/* const apiMagic = require('./controller/apiMagic'); */
+const db = require('./controller/dynamo');
 
 const app = express();
 
@@ -9,6 +11,12 @@ const { USERS_TABLE } = process.env;
 const dynamoDbClient = new AWS.DynamoDB.DocumentClient();
 
 app.use(express.json());
+
+app.get('/cards/:cardId', async (req, res) => {
+  const { TABLE_CARDS } = process.env;
+  const id = req.params.cardId;
+  const result = await db.getItemById(id, 'id', TABLE_CARDS);
+});
 
 app.get('/users/:userId', async (req, res) => {
   const params = {
@@ -59,13 +67,14 @@ app.post('/users', async (req, res) => {
   }
 });
 
-app.post('/cards', async (req, res) => {
-  // return apiMagic.getCollections()
+/* app.post('/cards', async (req, res) => {
+  const { TABLE_CARDS } = process.env;
+  console.log(TABLE_CARDS);
   const cards = await apiMagic.getCollections();
-  console.log(cards);
-  res.status(202).json(cards);
-  //TODO terminar pruebas con api e inyectar en dynamo DB
-});
+  const resultDb = await Promise.allSettled(cards.flat().map((card) => db.create(card, 'id', TABLE_CARDS, null)));
+  res.status(200).json(resultDb);
+  // TODO terminar pruebas con api e inyectar en dynamo DB
+}); */
 
 app.use((req, res, next) => res.status(404).json({
   error: 'Not Found',
@@ -73,5 +82,4 @@ app.use((req, res, next) => res.status(404).json({
 
 module.exports = {
   handler: serverless(app),
-  task: serverless(app),
 };
