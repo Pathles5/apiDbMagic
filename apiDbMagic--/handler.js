@@ -1,15 +1,16 @@
-const AWS = require("aws-sdk");
-const express = require("express");
-const serverless = require("serverless-http");
+const AWS = require('aws-sdk');
+const express = require('express');
+const serverless = require('serverless-http');
+const apiMagic = require('./controller/apiMagic');
 
 const app = express();
 
-const USERS_TABLE = process.env.USERS_TABLE;
+const { USERS_TABLE } = process.env;
 const dynamoDbClient = new AWS.DynamoDB.DocumentClient();
 
 app.use(express.json());
 
-app.get("/users/:userId", async function (req, res) {
+app.get('/users/:userId', async (req, res) => {
   const params = {
     TableName: USERS_TABLE,
     Key: {
@@ -29,23 +30,23 @@ app.get("/users/:userId", async function (req, res) {
     }
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Could not retreive user" });
+    res.status(500).json({ error: 'Could not retreive user' });
   }
 });
 
-app.post("/users", async function (req, res) {
+app.post('/users', async (req, res) => {
   const { userId, name } = req.body;
-  if (typeof userId !== "string") {
+  if (typeof userId !== 'string') {
     res.status(400).json({ error: '"userId" must be a string' });
-  } else if (typeof name !== "string") {
+  } else if (typeof name !== 'string') {
     res.status(400).json({ error: '"name" must be a string' });
   }
 
   const params = {
     TableName: USERS_TABLE,
     Item: {
-      userId: userId,
-      name: name,
+      userId,
+      name,
     },
   };
 
@@ -54,15 +55,23 @@ app.post("/users", async function (req, res) {
     res.json({ userId, name });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Could not create user" });
+    res.status(500).json({ error: 'Could not create user' });
   }
 });
 
-app.use((req, res, next) => {
-  return res.status(404).json({
-    error: "Not Found",
-  });
+app.post('/cards', async (req, res) => {
+  // return apiMagic.getCollections()
+  const cards = await apiMagic.getCollections();
+  console.log(cards);
+  res.status(202).json(cards);
+  //TODO terminar pruebas con api e inyectar en dynamo DB
 });
 
+app.use((req, res, next) => res.status(404).json({
+  error: 'Not Found',
+}));
 
-module.exports.handler = serverless(app);
+module.exports = {
+  handler: serverless(app),
+  task: serverless(app),
+};

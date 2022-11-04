@@ -1,12 +1,11 @@
 service: apiDbMagic
 frameworkVersion: '3'
 
-custom:
-  tableName: 'users-table-${sls:stage}'
-
 provider:
   name: aws
-  runtime: nodejs14.x
+  runtime: nodejs16.x
+  region: eu-west-1
+  stage: ${opt:stage, 'dev'}    
   iam:
     role:
       statements:
@@ -22,12 +21,24 @@ provider:
             - Fn::GetAtt: [ UsersTable, Arn ]
   environment:
     USERS_TABLE: ${self:custom.tableName}
+    STAGE: ${self:provider.stage}    
 
 functions:
   api:
     handler: handler.handler
     events:
       - httpApi: '*'
+    environment:
+      MGC_COLLECTIONS: 'IKO;GRN;ISD'
+      URL_API: https://api.scryfall.com/cards/search
+  task:
+    handler: handler.task
+    event:
+      - httpApi:
+          path: /task
+          method: get
+    environment:
+      MGC_COLLECTIONS: 'IKO;GRN;ISD'
 
 resources:
   Resources:
@@ -42,3 +53,21 @@ resources:
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.tableName}
+        
+custom:
+  dynamodb:
+    stages:
+      - ${self:provider.stage}
+    start:
+      port: 8000
+      inMemory: true
+      heapInitial: 200m
+      heapMax: 1g
+      migrate: true
+      seed: true
+      convertEmptyValues: true
+  tableName: 'users-table-${sls:stage}'
+
+plugins:
+  - serverless-dynamodb-local
+  - serverless-offline
