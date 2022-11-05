@@ -46,7 +46,12 @@ module.exports = {
       },
     };
     try {
-      const { Item } = await dynamoDB.get(params).promise();
+      console.log('params');
+      console.log(params);
+      const result = await dynamoDB.get(params).promise();
+      const { Item } = result;
+      console.log('result');
+      console.log(result);
       if (Item) {
         returned = response.ok(Item);
       } else {
