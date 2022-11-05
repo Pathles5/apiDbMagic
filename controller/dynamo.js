@@ -2,12 +2,17 @@
 const AWS = require('aws-sdk');
 
 // const dynamoDB = new AWS.DynamoDB.DocumentClient();
-const dynamoDB = new AWS.DynamoDB.DocumentClient({
-  region: 'localhost',
-  endpoint: 'http://localhost:8000',
-  accessKeyId: 'DEFAULT_ACCESS_KEY', // needed if you don't have aws credentials at all in env
-  secretAccessKey: 'DEFAULT_SECRET', // needed if you don't have aws credentials at all in env
-});
+
+if (process.env.STAGE === 'dev') {
+  const dynamoDB = new AWS.DynamoDB.DocumentClient({
+    region: 'localhost',
+    endpoint: 'http://localhost:8000',
+    accessKeyId: 'DEFAULT_ACCESS_KEY', // needed if you don't have aws credentials at all in env
+    secretAccessKey: 'DEFAULT_SECRET', // needed if you don't have aws credentials at all in env
+  });
+} else {
+  const dynamoDB = new AWS.DynamoDB.DocumentClient();
+}
 const response = require('../utils/crud_cotroller_response');
 
 module.exports = {
