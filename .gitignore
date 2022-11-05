@@ -2,3 +2,5 @@ node_modules
 .serverless
 .vscode
 .dynamodb
+
+./package-lock.json
