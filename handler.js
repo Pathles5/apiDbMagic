@@ -22,7 +22,7 @@ app.get(
     if (!errors.isEmpty()) {
       return res.status(400).json(errors);
     }
-    const id = req.params.idLegal;
+    const id = req.params.cardId;
     const result = await getCardById(id);
     if (!result.error) {
       return res.status(200).json(result.data);
