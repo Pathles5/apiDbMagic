@@ -8,7 +8,6 @@ const dynamoDB = new AWS.DynamoDB.DocumentClient();
   accessKeyId: 'DEFAULT_ACCESS_KEY', // needed if you don't have aws credentials at all in env
   secretAccessKey: 'DEFAULT_SECRET', // needed if you don't have aws credentials at all in env
 }); */
-// const dynamoDB = new AWS.DynamoDB.DocumentClient();
 
 const response = require('../utils/crud_cotroller_response');
 

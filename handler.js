@@ -3,14 +3,9 @@ const AWS = require('aws-sdk');
 const express = require('express');
 const serverless = require('serverless-http');
 const check = require('express-validator');
-/* const apiMagic = require('./controller/apiMagic'); */
-// const db = require('./controller/dynamo');
 const { getCardById, getCardByAttribute, getCardsLegal } = require('./controller/card');
 
 const app = express();
-/*
-const { USERS_TABLE } = process.env;
-const dynamoDbClient = new AWS.DynamoDB.DocumentClient(); */
 
 app.use(express.json());
 
@@ -34,7 +29,7 @@ app.get(
 app.get(
   '/cards',
   async (req, res) => {
-    const result = await getCardByAttribute(req.query, req.query.startKey);
+    const result = await getCardByAttribute(req.query, req.query.start_key);
     if (!result.error) {
       return res.status(200).json(result.data);
     }

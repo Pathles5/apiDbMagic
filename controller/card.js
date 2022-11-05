@@ -18,7 +18,7 @@ module.exports = {
     let returned;
     const { TABLE_CARDS } = process.env;
     const queryStrings = atts;
-    delete queryStrings.startKey;
+    delete queryStrings.start_key;
     const queryKeys = Object.keys(queryStrings);
     const result = await db.getItemByAttributes(queryStrings, queryKeys, TABLE_CARDS, startKey);
     if (!result.error) {
