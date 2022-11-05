@@ -1,0 +1,24 @@
+version: 0.2
+run-as: root
+phases:
+  install:
+    runtime-versions:
+      nodejs: 16
+    commands:
+      - echo Installing Serverless
+      - npm install -g serverless
+  pre_build:
+    commands:
+      - echo installing source NPM dependencies...
+      - npm install
+      - echo Executing unit test...
+      # - npm install -g newman
+      # - newman run test/test-pre.collection.json
+  build:
+    commands:
+      - echo Starting deploy in branch ${STAGE}
+      - serverless deploy --stage ${STAGE}
+      - serverless prune -n 4 --stage ${STAGE}
+cache:
+  paths:
+    - node_modules
