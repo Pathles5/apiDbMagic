@@ -34,7 +34,7 @@ functions:
   task:
     handler: task.main
     events:
-      - schedule: cron(29 16 * * ? *)
+      - schedule: cron(28 17 * * ? *)
 
     environment:
       MGC_COLLECTIONS: 'IKO;GRN;ISD'
