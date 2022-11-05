@@ -24,7 +24,11 @@ module.exports = {
         };
         params.ConditionExpression = 'attribute_not_exists(#keyName)';
       }
-      await dynamoDB.put(params).promise();
+      console.log('params DB Create');
+      console.log(params);
+      const result = await dynamoDB.put(params).promise();
+      console.log('Created:');
+      console.log(result);
       returned = response.ok(item);
     } catch (error) {
       console.log(' ❌ Error creating cards into Dynamo ❌ ');
