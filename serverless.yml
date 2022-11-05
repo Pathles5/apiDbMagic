@@ -30,7 +30,7 @@ functions:
     events:
       - httpApi: '*'
     #environment:
-      #TABLE_CARDS: ${self:custom.tableName} 
+      #TABLE_CARDS: ${self:custom.tableName}
   task:
     handler: task.main
     events:
