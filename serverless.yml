@@ -24,6 +24,12 @@ provider:
     STAGE: ${self:provider.stage}    
     TABLE_CARDS: ${self:custom.tableName}
 
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:*
+      Resource: 'arn:aws:dynamodb:eu-west-1:*:*'
+
 functions:
   api:
     handler: handler.handler
