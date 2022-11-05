@@ -55,13 +55,14 @@ module.exports = {
     return returned;
   },
 
-  getItemByAttributes: async (attributtes, keyAttributes, tableName) => {
+  getItemByAttributes: async (attributtes, keyAttributes, tableName, startKey) => {
     let returned;
     const params = {
       TableName: tableName,
       FilterExpression: '',
       ExpressionAttributeNames: {},
       ExpressionAttributeValues: {},
+      ...(startKey && { ExclusiveStartKey: { id: startKey } }),
     };
     keyAttributes.forEach((att, idx, array) => {
       params.ExpressionAttributeNames[`#${att}`] = att;
@@ -72,10 +73,40 @@ module.exports = {
         params.FilterExpression = params.FilterExpression.concat(`#${att} = :${att} and `);
       }
     });
+    console.log(params);
     try {
-      const { Items } = await dynamoDB.scan(params).promise();
-      if (Items) {
-        returned = response.ok(Items);
+      const result = await dynamoDB.scan(params).promise();
+      console.log(result);
+      if (result.Items) {
+        returned = response.ok({ items: result.Items, last_key: result.LastEvaluatedKey?.id });
+      } else {
+        returned = response.error('Could not find card with provided params', null, 404);
+      }
+    } catch (error) {
+      console.log(error);
+      returned = response.error('Could not retreive card', null, 500);
+    }
+    return returned;
+  },
+
+  getCardsLegal: async (value, tableName, startKey) => {
+    let returned;
+    const params = {
+      TableName: tableName,
+      FilterExpression: '#legalities.#mode = :value',
+      ExpressionAttributeNames: {
+        '#legalities': 'legalities',
+        '#mode': value,
+      },
+      ExpressionAttributeValues: { ':value': 'legal' },
+      ...(startKey && { ExclusiveStartKey: { id: startKey } }),
+    };
+    console.log(params);
+    try {
+      const result = await dynamoDB.scan(params).promise();
+      // console.log(result);
+      if (result.Items) {
+        returned = response.ok({ items: result.Items, last_key: result.LastEvaluatedKey?.id });
       } else {
         returned = response.error('Could not find card with provided params', null, 404);
       }
