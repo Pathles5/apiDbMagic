@@ -33,7 +33,7 @@ module.exports = {
     }
     return returned;
   },
-  getItemById: async (keyValue, keyName, tableName) => {
+  getItemByKey: async (keyValue, keyName, tableName) => {
     let returned;
     const params = {
       TableName: tableName,
@@ -41,15 +41,43 @@ module.exports = {
         [keyName]: keyValue,
       },
     };
-
     try {
       const { Item } = await dynamoDB.get(params).promise();
       if (Item) {
-        console.log('Item');
-        console.log(Item);
         returned = response.ok(Item);
       } else {
         returned = response.error('Could not find card with provided "id"', null, 404);
+      }
+    } catch (error) {
+      console.log(error);
+      returned = response.error('Could not retreive card', null, 500);
+    }
+    return returned;
+  },
+
+  getItemByAttributes: async (attributtes, keyAttributes, tableName) => {
+    let returned;
+    const params = {
+      TableName: tableName,
+      FilterExpression: '',
+      ExpressionAttributeNames: {},
+      ExpressionAttributeValues: {},
+    };
+    keyAttributes.forEach((att, idx, array) => {
+      params.ExpressionAttributeNames[`#${att}`] = att;
+      params.ExpressionAttributeValues[`:${att}`] = attributtes[att];
+      if (idx === array.length - 1) {
+        params.FilterExpression = params.FilterExpression.concat(`#${att} = :${att}`);
+      } else {
+        params.FilterExpression = params.FilterExpression.concat(`#${att} = :${att} and `);
+      }
+    });
+    try {
+      const { Items } = await dynamoDB.scan(params).promise();
+      if (Items) {
+        returned = response.ok(Items);
+      } else {
+        returned = response.error('Could not find card with provided params', null, 404);
       }
     } catch (error) {
       console.log(error);
