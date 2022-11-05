@@ -18,7 +18,7 @@ phases:
     commands:
       - echo Starting deploy in branch ${STAGE}
       - serverless deploy --stage ${STAGE}
-      - serverless prune -n 4 --stage ${STAGE}
+      # - serverless prune -n 4 --stage ${STAGE}
 cache:
   paths:
     - node_modules
