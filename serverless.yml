@@ -31,6 +31,7 @@ functions:
     handler: handler.handler
     events:
       - httpApi: '*'
+        cors: false
     #environment:
       #TABLE_CARDS: ${self:custom.tableName}
   task:
