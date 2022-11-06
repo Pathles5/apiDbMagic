@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-const AWS = require('aws-sdk');
+// const AWS = require('aws-sdk');
 const express = require('express');
 const serverless = require('serverless-http');
 const check = require('express-validator');
@@ -9,7 +9,7 @@ const app = express();
 
 app.use(express.json());
 
-app.get(
+app.get( // id
   '/cards/:cardId',
   check.param('cardId').exists(),
   async (req, res) => {
@@ -26,10 +26,10 @@ app.get(
   },
 );
 
-app.get(
+app.get( // name and set
   '/cards',
   async (req, res) => {
-    const result = await getCardByAttribute(req.query, req.query.start_key);
+    const result = await getCardByAttribute(req.query);
     if (!result.error) {
       return res.status(200).json(result.data);
     }
@@ -37,7 +37,7 @@ app.get(
   },
 );
 
-app.get(
+app.get( // legal
   '/cards/legal/:idLegal',
   check.param('idLegal').isString(),
   async (req, res) => {

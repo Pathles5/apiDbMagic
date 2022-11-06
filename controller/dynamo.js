@@ -1,13 +1,13 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 const AWS = require('aws-sdk');
 
-const dynamoDB = new AWS.DynamoDB.DocumentClient();
-/* const dynamoDB = new AWS.DynamoDB.DocumentClient({
+const dynamoDB = new AWS.DynamoDB.DocumentClient({
   region: 'localhost',
   endpoint: 'http://localhost:8000',
   accessKeyId: 'DEFAULT_ACCESS_KEY', // needed if you don't have aws credentials at all in env
   secretAccessKey: 'DEFAULT_SECRET', // needed if you don't have aws credentials at all in env
-}); */
+});
+// const dynamoDB = new AWS.DynamoDB.DocumentClient();
 
 const response = require('../utils/crud_cotroller_response');
 
@@ -25,11 +25,7 @@ module.exports = {
         };
         params.ConditionExpression = 'attribute_not_exists(#keyName)';
       }
-      console.log('params DB Create');
-      console.log(params);
       const result = await dynamoDB.put(params).promise();
-      console.log('Created:');
-      console.log(result);
       returned = response.ok(item);
     } catch (error) {
       console.log(' ❌ Error creating cards into Dynamo ❌ ');
@@ -65,7 +61,7 @@ module.exports = {
     return returned;
   },
 
-  getItemByAttributes: async (attributtes, keyAttributes, tableName, startKey) => {
+  /* getItemByAttributes: async (attributtes, keyAttributes, tableName, startKey) => {
     let returned;
     const params = {
       TableName: tableName,
@@ -89,6 +85,38 @@ module.exports = {
       console.log(result);
       if (result.Items) {
         returned = response.ok({ items: result.Items, last_key: result.LastEvaluatedKey?.id });
+      } else {
+        returned = response.error('Could not find card with provided params', null, 404);
+      }
+    } catch (error) {
+      console.log(error);
+      returned = response.error('Could not retreive card', null, 500);
+    }
+    return returned;
+  }, */
+
+  getItemByAttributes: async (value, key, tableName, index) => {
+    let returned;
+    const params = {
+      TableName: tableName,
+      IndexName: index,
+      KeyConditionExpression: '#key = :key',
+      ExpressionAttributeNames: {
+        '#key': key,
+      },
+      ExpressionAttributeValues: {
+        ':key': value,
+      },
+    };
+
+    console.log('params');
+    console.log(params);
+    try {
+      const result = await dynamoDB.query(params).promise();
+      console.log(`result DB(${key})`);
+      console.log(result);
+      if (result.Items) {
+        returned = response.ok({ items: result.Items });
       } else {
         returned = response.error('Could not find card with provided params', null, 404);
       }
