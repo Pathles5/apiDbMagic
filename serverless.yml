@@ -30,10 +30,7 @@ functions:
   api:
     handler: handler.handler
     events:
-      - http:
-          path: /{proxy+}
-          mathod: 'any'
-          cors: false
+      - httpApi: '*'
     #environment:
       #TABLE_CARDS: ${self:custom.tableName}
   task:
