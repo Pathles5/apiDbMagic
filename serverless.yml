@@ -32,7 +32,7 @@ functions:
     events:
       - http:
           path: /{proxy+}
-          mathod: 'any'
+          method: 'any'
           cors: true
     #environment:
       #TABLE_CARDS: ${self:custom.tableName}
