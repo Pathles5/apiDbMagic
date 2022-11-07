@@ -1,0 +1,10 @@
+body {
+  width: 60%;
+  margin: 0 auto 0 auto;
+}
+ #nav {
+  margin: 2rem auto;
+}
+.filter {
+  padding: 4rem;
+}
