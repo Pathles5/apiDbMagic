@@ -166,10 +166,22 @@ const main = async () => {
   // end: NAV
 
   // start: Buttons
-  $(ids.id.button).click(async () => await getCardById());
-  $(ids.name.button).click(async () => await getCardByAtt('name'));
-  $(ids.set.button).click(async () => await getCardByAtt('set'));
-  $(ids.legal.button).click(async () => await getCardByLegal());
+  $(ids.id.button).click(async () => {
+    $('tbody').empty();
+    await getCardById();
+  });
+  $(ids.name.button).click(async () => {
+    $('tbody').empty();
+    await getCardByAtt('name');
+  });
+  $(ids.set.button).click(async () => {
+    $('tbody').empty();
+    await getCardByAtt('set');
+  });
+  $(ids.legal.button).click(async () => {
+    $('tbody').empty();
+    await getCardByLegal();
+  });
   // end: buttons
 };
 
