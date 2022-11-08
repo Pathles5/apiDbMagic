@@ -38,9 +38,9 @@ const transformCard = (card)=>{
     language: card.lang,
     collection: card.set,
     collection_name: card.set_name,
-    image_url: card.image_uris,
+    image_uris: card.image_uris,
     legal: card.legalities,
-    relase_at: card.released_at,
+    released_at: card.released_at,
   };
 }
 
