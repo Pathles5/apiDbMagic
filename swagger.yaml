@@ -1,0 +1,126 @@
+openapi: 3.0.3
+info:
+  title: API OptivaMagic
+  description: OptivaMagic
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: antonio.lopez.sarmiento@gmailcom
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.11
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  - url: https://igv3shcb7k.execute-api.eu-west-1.amazonaws.com/pre
+tags:
+  - name: cards
+    description: Consultar Cartas
+paths:
+  /cards:
+    get:
+      tags:
+        - cards
+      summary: Encuentra cartas por 'name' o por 'set'
+      description: Encuentra cartas por 'name' o por 'set'
+      operationId: getCardsByAttribute
+      parameters:
+        - name: name
+          in: query
+          description: Nombre de la carta
+          required: false
+          explode: true
+          schema:
+            type: string
+        - name: set
+          in: query
+          description: Identificador de la coleccion
+          required: false
+          schema:
+            type: string
+            enum:
+              - iko
+              - grn
+              - isd
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Card' 
+        '400':
+          description: Invalid status value
+  /cards/{cardId}:
+    get:
+      tags:
+        - cards
+      summary: Encuentra una carta por 'Id'
+      description: Encuentra una carta por 'Id'
+      operationId: getCardById
+      parameters:
+        - name: cardId
+          in: path
+          description: ID de la carta
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Card' 
+        '400':
+          description: Invalid status value
+  /cards/legal/{legalId}:
+    get:
+      tags:
+        - cards
+      summary: Encuentra cartas segun si son legales para el modo indicado
+      description: Encuentra cartas segun si son legales para el modo indicado
+      operationId: getCardsByLegal
+      parameters:
+        - name: legalId
+          in: path
+          description: modo de juego
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Card'  
+        '400':
+          description: Invalid status value
+components:
+  schemas:
+    Card:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        image_uris:
+          type: object
+        lang:
+          type: string
+        legalities:
+          type: object
+        released_at:
+          type: string
+          format: date
+        set:
+          type: string
+        set_name:
+          type: string

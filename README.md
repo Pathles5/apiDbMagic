@@ -10,7 +10,8 @@ Este ejercicio consiste en tres partes:
 - Exponer una interfaz gráfica para poder hacer uso de este servicio.
 
 
-## Diseño de la solución
+## Diseño
+### La solución
 
 Para cargar la base de datos, se genera un evento diario encargado de la lectura de datos de la API Scryfall y los carga en la tabla `cards`.
 
@@ -26,7 +27,7 @@ De manera que el diagrama de arquitectura de la solución final queda de la sigu
 
 ![alt text3](https://front-api-magic.s3.eu-west-1.amazonaws.com/solucion.drawio.png)
 
-## Diseño de flujos
+### Flujos
 Para el servicio consulta de cartas y la tarea de carga de cartas, se definieron los siguientes diagramas de secuencia acorde al flujo indicado:
 
 Tarea de carga de cartas en la tabla cartas:
@@ -38,120 +39,42 @@ Servicio consulta de cartas:
 ![alt text5](https://front-api-magic.s3.eu-west-1.amazonaws.com/GetCardByAttribute.png)
 
 
-## Usage
+## Puesta en marcha
+### Despliegue y Compilación
 
-### Deployment
+En el archivo `buildspec.yml` estan las instrucciones para la compilación del proyecto.
+Las librerias usadas para el desarrollo han sido:
+- axios: como cliente HTTP.
+- express: para levantar un servidor dentro del proyecto NodeJS y poder gestionar las rutas y peticiones.
+- express-validator: para validar la composicion de las peticiones que se realizan al servicio.
+- serverless: es el compilador y el framework encargado de ejecutar el despliegue continuo.
 
-Install dependencies with:
 
-```
-npm install
-```
-
-and then deploy with:
-
-```
-serverless deploy
-```
-
-After running deploy, you should see output similar to:
+Despues de haber terminado el despliegue, en los logs de la canalización podemos encontrar algo parecido a esto:
 
 ```bash
-Deploying aws-node-express-dynamodb-api-project to stage dev (us-east-1)
+Deploying apiDbMagic to stage pre (eu-west-1)
 
-✔ Service deployed to stack aws-node-express-dynamodb-api-project-dev (196s)
+✔ Service deployed to stack apiDbMagic-pre (47s)
 
-endpoint: ANY - https://xxxxxxxxxx.execute-api.us-east-1.amazonaws.com
+endpoint: ANY - https://igv3shcb7k.execute-api.eu-west-1.amazonaws.com/pre/{proxy+}
 functions:
-  api: aws-node-express-dynamodb-api-project-dev-api (766 kB)
-```
-
-_Note_: In current form, after deployment, your API is public and can be invoked by anyone. For production deployments, you might want to configure an authorizer. For details on how to do that, refer to [`httpApi` event docs](https://www.serverless.com/framework/docs/providers/aws/events/http-api/). Additionally, in current configuration, the DynamoDB table will be removed when running `serverless remove`. To retain the DynamoDB table even after removal of the stack, add `DeletionPolicy: Retain` to its resource definition.
-
-### Invocation
-
-After successful deployment, you can create a new user by calling the corresponding endpoint:
-
-```bash
-curl --request POST 'https://xxxxxx.execute-api.us-east-1.amazonaws.com/users' --header 'Content-Type: application/json' --data-raw '{"name": "John", "userId": "someUserId"}'
-```
-
-Which should result in the following response:
-
-```bash
-{"userId":"someUserId","name":"John"}
-```
-
-You can later retrieve the user by `userId` by calling the following endpoint:
-
-```bash
-curl https://xxxxxxx.execute-api.us-east-1.amazonaws.com/users/someUserId
-```
-
-Which should result in the following response:
-
-```bash
-{"userId":"someUserId","name":"John"}
-```
-
-If you try to retrieve user that does not exist, you should receive the following response:
-
-```bash
-{"error":"Could not find user with provided \"userId\""}
-```
-
-### Local development
-
-It is also possible to emulate DynamoDB, API Gateway and Lambda locally using the `serverless-dynamodb-local` and `serverless-offline` plugins. In order to do that, run:
-
-```bash
-serverless plugin install -n serverless-dynamodb-local
-serverless plugin install -n serverless-offline
-```
-
-It will add both plugins to `devDependencies` in `package.json` file as well as will add it to `plugins` in `serverless.yml`. Make sure that `serverless-offline` is listed as last plugin in `plugins` section:
+  api: apiDbMagic-pre-api (20 MB)
+  task: apiDbMagic-pre-task (20 MB)
 
 ```
-plugins:
-  - serverless-dynamodb-local
-  - serverless-offline
-```
 
-You should also add the following config to `custom` section in `serverless.yml`:
+Aqui se muestra el endpoint en el que se expondra el servicio que lleva la API como disparador.
 
-```
-custom:
-  (...)
-  dynamodb:
-    start:
-      migrate: true
-    stages:
-      - dev
-```
+### Invocación
 
-Additionally, we need to reconfigure `AWS.DynamoDB.DocumentClient` to connect to our local instance of DynamoDB. We can take advantage of `IS_OFFLINE` environment variable set by `serverless-offline` plugin and replace:
+Despues del despliegue satisfactorio podemos obtener el enpoint y llamarlo bajo el acuerdo de interfaces declarado en el swagger:
 
-```javascript
-const dynamoDbClient = new AWS.DynamoDB.DocumentClient();
-```
+<a href="https://front-api-magic.s3.eu-west-1.amazonaws.com/swagger.yaml"> Acuerdo de interfaces </a>
 
-with the following:
 
-```javascript
-const dynamoDbClientParams = {};
-if (process.env.IS_OFFLINE) {
-  dynamoDbClientParams.region = 'localhost'
-  dynamoDbClientParams.endpoint = 'http://localhost:8000'
-}
-const dynamoDbClient = new AWS.DynamoDB.DocumentClient(dynamoDbClientParams);
-```
+## Acceso a la Interfaz
 
-After that, running the following command with start both local API Gateway emulator as well as local instance of emulated DynamoDB:
+La interfaz gráfica en una web basica consumiendo la api con el servicio consulta de cartas. La web se encuentra alojada en un bucket S3 público:
 
-```bash
-serverless offline start
-```
-
-To learn more about the capabilities of `serverless-offline` and `serverless-dynamodb-local`, please refer to their corresponding GitHub repositories:
-- https://github.com/dherault/serverless-offline
-- https://github.com/99x/serverless-dynamodb-local
+<a href="https://front-api-magic.s3.eu-west-1.amazonaws.com/index.html#"> App Magic </a>
