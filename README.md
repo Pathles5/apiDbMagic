@@ -13,6 +13,7 @@ Este ejercicio consiste en tres partes:
 ## Diseño de la solución
 
 Para cargar la base de datos, se genero un evento diario que dispara una tarea de lectura de datos de la API Scryfall y los carga en la tabla `cards`.
+<br>
 ![alt text](https://front-api-magic.s3.eu-west-1.amazonaws.com/task.drawio.png)
 
 ## Usage
