@@ -1,119 +1,116 @@
-"use estrict"
+'use estrict';
+
 // start: GENERICS
 const ids = {
-  id:{
+  id: {
     nav: '#idNav',
     div: '#divId',
     button: '#idButton',
     input: '#idInput',
   },
-  name:{
+  name: {
     nav: '#nameNav',
     div: '#nameId',
     button: '#nameButton',
     input: '#nameInput',
   },
-  set:{
+  set: {
     nav: '#setNav',
     div: '#setId',
     button: '#setButton',
     input: '#setInput',
   },
-  legal:{
+  legal: {
     nav: '#legalNav',
     div: '#legalId',
     button: '#legalButton',
     input: '#legalInput',
   },
-}
+};
 
-////  start: SIMPLES METHODS
-const parseString = (jsonObject)=>{
-  return JSON.stringify(jsonObject).replaceAll(',','\n').replaceAll('{','').replaceAll('}','')
-}
-const transformCard = (card)=>{
-  return {
-    id: card.id,
-    name: card.name,
-    language: card.lang,
-    collection: card.set,
-    collection_name: card.set_name,
-    image_uris: card.image_uris,
-    legal: card.legalities,
-    released_at: card.released_at,
-  };
-}
+/// /  start: SIMPLES METHODS
+const parseString = (jsonObject) => JSON.stringify(jsonObject).replaceAll(',', '\n').replaceAll('{', '').replaceAll('}', '');
+const transformCard = (card) => ({
+  id: card.id,
+  name: card.name,
+  language: card.lang,
+  collection: card.set,
+  collection_name: card.set_name,
+  image_uris: card.image_uris,
+  legal: card.legalities,
+  released_at: card.released_at,
+});
 
-const selectUrl = (value,key) =>{
+const selectUrl = (value, key) => {
   let url = 'https://igv3shcb7k.execute-api.eu-west-1.amazonaws.com/pre/cards';
   switch (key) {
     case 'id':
-      url += `/${value}`
+      url += `/${value}`;
       break;
     case 'name':
     case 'set':
-      url += `?${key}=${value}`
+      url += `?${key}=${value}`;
       break;
     case 'legal':
-      url += `/${key}/${value}`
+      url += `/${key}/${value}`;
       break;
     default:
       break;
   }
   return url;
-}
-////  end: SIMPLES METHODS
-const doRequest = async (value,key) =>{
+};
+/// /  end: SIMPLES METHODS
+const doRequest = async (value, key) => {
   const returned = {
     data: null,
-    error: null
+    error: null,
   };
-  console.log('selectUrl(value,key)')
-  console.log(selectUrl(value,key))
+  console.log('selectUrl(value,key)');
+  console.log(selectUrl(value, key));
   const query = await $.ajax({
-    url: selectUrl(value,key),
+    url: selectUrl(value, key),
     data: null,
     type: 'GET',
-    dataType: null ,
-    success: (data)=>{
-      console.log('success')
+    dataType: null,
+    success: (data) => {
+      console.log('success');
     },
-    error: (err)=>{
-      console.log('error')
+    error: (err) => {
+      console.log('error');
     },
-    complete: (data)=>{
-      console.log('complete')
-    }
+    complete: (data) => {
+      console.log('complete');
+    },
   });
-  
-  console.log('query')
-  console.log(query)
-  if (query){
+
+  console.log('query');
+  console.log(query);
+  if (query) {
     returned.data = query;
-  }else{
+  } else {
     returned.error = 'Not Found!!';
   }
   return returned;
-}
+};
 
-const createContentTabel = (listCards,elementTable)=>{
-  listCards.forEach(card => {
+const createContentTabel = (listCards, elementTable) => {
+  listCards.forEach((card) => {
     elementTable.removeClass('d-none');
     $('tbody').append(`<tr>
         <td class="table-primary temp">${card.id}</td>
         <td class="table-primary temp">${card.name}</td>
         <td class="table-primary temp">${card.language}</td>
         <td class="table-primary temp">${card.relase_at}</td>
-        <td class="table-primary temp">${parseString(card.image_url)}</td>
+        <td class="table-primary temp">${parseString(card.image_uris)}</td>
         <td class="table-primary temp">${card.collection}</td>
         <td class="table-primary temp">${card.collection_name}</td>
         <td class="table-primary temp">${parseString(card.legal)}</td>
       </tr>`);
   });
-}
+};
 
-const changeDisplay = (elementChosen) =>{
-  Object.keys(ids).filter(att => att !== elementChosen).forEach(att => {
+const changeDisplay = (elementChosen) => {
+  Object.keys(ids).filter((att) => att !== elementChosen).forEach((att) => {
     $(ids[att].nav).removeClass('active');
     $(ids[att].div).addClass('d-none');
   });
@@ -121,55 +118,54 @@ const changeDisplay = (elementChosen) =>{
   $(ids[elementChosen].div).removeClass('d-none');
   $('tbody').empty();
   $('#table').addClass('d-none');
-}
+};
 // end: GENERICS
 
 // start: METHODS FOR QUERIES
 // // ID
-const getCardById = async() =>{
+const getCardById = async () => {
   // id="6eb0d9a2-f9bb-4d8e-a1ca-896c42f8ad56"
-  let id = $('#idInput').val();
+  const id = $('#idInput').val();
 
-  const card = await doRequest(id,'id');
+  const card = await doRequest(id, 'id');
   containTable = transformCard(card.data);
-  createContentTabel([containTable],$('#table'))
-}
+  createContentTabel([containTable], $('#table'));
+};
 
 // // name & set
-const getCardByAtt = async(attKey) => {
+const getCardByAtt = async (attKey) => {
   // let attValue = 'Zirda, the Dawnwaker' //name
-  let attValue = $(ids[attKey].input).val();
-  const cards = await doRequest(attValue,attKey);
+  const attValue = $(ids[attKey].input).val();
+  const cards = await doRequest(attValue, attKey);
 
-  let containTable = cards.data.items.map(card => transformCard(card));
-  createContentTabel(containTable,$('#table'))
+  const containTable = cards.data.items.map((card) => transformCard(card));
+  createContentTabel(containTable, $('#table'));
 };
 
 // // legal
-const getCardByLegal = async() => {
+const getCardByLegal = async () => {
   // idLegal="gladiator"
-  let idLegal = $(ids.legal.input).val();
+  const idLegal = $(ids.legal.input).val();
 
-  const cards = await doRequest(idLegal,'legal');
-  let containTable = cards.data.items.map(card => transformCard(card));
-  createContentTabel(containTable,$('#table'))
+  const cards = await doRequest(idLegal, 'legal');
+  const containTable = cards.data.items.map((card) => transformCard(card));
+  createContentTabel(containTable, $('#table'));
 };
 // end: METHODS FOR QUERIES
 
-const main = async()=>{
+const main = async () => {
   // start: NAV
-  Object.keys(ids).forEach((att)=>{
-    $(ids[att].nav).click(()=>changeDisplay(att));
+  Object.keys(ids).forEach((att) => {
+    $(ids[att].nav).click(() => changeDisplay(att));
   });
   // end: NAV
 
   // start: Buttons
-  $( ids.id.button).click( async()=>await getCardById());
-  $( ids.name.button).click( async()=>await getCardByAtt('name'));
-  $( ids.set.button).click( async()=>await getCardByAtt('set'));
-  $( ids.legal.button).click( async()=>await getCardByLegal());
+  $(ids.id.button).click(async () => await getCardById());
+  $(ids.name.button).click(async () => await getCardByAtt('name'));
+  $(ids.set.button).click(async () => await getCardByAtt('set'));
+  $(ids.legal.button).click(async () => await getCardByLegal());
   // end: buttons
-  
-}
+};
 
 $(document).ready(main);
