@@ -29,7 +29,12 @@ const ids = {
 };
 
 /// /  start: SIMPLES METHODS
-const parseString = (jsonObject) => JSON.stringify(jsonObject).replaceAll(',', '\n').replaceAll('{', '').replaceAll('}', '');
+const parseString = (jsonObject) => {
+  if (jsonObject) {
+    return JSON.stringify(jsonObject).replaceAll(',', '\n').replaceAll('{', '').replaceAll('}', '');
+  }
+  return '';
+};
 const transformCard = (card) => ({
   id: card.id,
   name: card.name,
