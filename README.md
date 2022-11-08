@@ -26,6 +26,15 @@ De manera que el diagrama de arquitectura de la solución final queda de la sigu
 
 ![alt text3](https://front-api-magic.s3.eu-west-1.amazonaws.com/solucion.drawio.png)
 
+## Diseño de flujos
+Para el servicio consulta de cartas y la tarea de carga de cartas, se definieron los siguientes diagramas de secuencia acorde al flujo indicado:
+
+Tarea de carga de cartas en la tabla cartas:
+![alt text4](https://front-api-magic.s3.eu-west-1.amazonaws.com/taskUploadDDBB.png)
+
+Servicio consulta de cartas:
+![alt text5](https://front-api-magic.s3.eu-west-1.amazonaws.com/GetCardByAttribute.png)
+
 
 ## Usage
 
