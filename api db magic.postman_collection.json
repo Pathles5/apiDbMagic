@@ -1,0 +1,106 @@
+{
+	"info": {
+		"_postman_id": "cbce27d9-eb75-4ff1-81e8-d98223c8451d",
+		"name": "api db magic",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "7093171"
+	},
+	"item": [
+		{
+			"name": "pre",
+			"item": [
+				{
+					"name": "task",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "GetCardById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://igv3shcb7k.execute-api.eu-west-1.amazonaws.com/pre/cards/6eb0d9a2-f9bb-4d8e-a1ca-896c42f8ad56",
+							"protocol": "https",
+							"host": [
+								"igv3shcb7k",
+								"execute-api",
+								"eu-west-1",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"pre",
+								"cards",
+								"6eb0d9a2-f9bb-4d8e-a1ca-896c42f8ad56"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetCardByAttribute",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://igv3shcb7k.execute-api.eu-west-1.amazonaws.com/pre/cards?name=Zirda, the Dawnwaker",
+							"protocol": "https",
+							"host": [
+								"igv3shcb7k",
+								"execute-api",
+								"eu-west-1",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"pre",
+								"cards"
+							],
+							"query": [
+								{
+									"key": "set",
+									"value": "iko",
+									"disabled": true
+								},
+								{
+									"key": "name",
+									"value": "Zirda, the Dawnwaker"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getCardsLegal",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://igv3shcb7k.execute-api.eu-west-1.amazonaws.com/pre/cards/legal/gladiator",
+							"protocol": "https",
+							"host": [
+								"igv3shcb7k",
+								"execute-api",
+								"eu-west-1",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"pre",
+								"cards",
+								"legal",
+								"gladiator"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
