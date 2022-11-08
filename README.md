@@ -14,23 +14,17 @@ Este ejercicio consiste en tres partes:
 
 Para cargar la base de datos, se genera un evento diario encargado de la lectura de datos de la API Scryfall y los carga en la tabla `cards`.
 
-<br>
 ![alt text1](https://front-api-magic.s3.eu-west-1.amazonaws.com/task.drawio.png)
-<br>
 
 El servicio de consulta de cartas es un servicio desarrollado con el framework: `express`. Esto va empaquetado en una funcion lambda y el montaje de la solucion es:
 
-<br>
 ![alt text2](https://front-api-magic.s3.eu-west-1.amazonaws.com/cards+service.drawio.png)
-<br>
 
 Y el frontal ha sido expuesto publicamente en u S3, sin necesidad de levantar ningun tipo de maquina.
 
 De manera que el diagrama de arquitectura de la solución final queda de la siguiente manera:
 
-<br>
 ![alt text3](https://front-api-magic.s3.eu-west-1.amazonaws.com/solucion.drawio.png)
-<br>
 
 
 ## Usage
