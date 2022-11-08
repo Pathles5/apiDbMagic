@@ -39,7 +39,7 @@ functions:
   task:
     handler: task.main
     events:
-      - schedule: cron(25 11 * * ? *)
+      - schedule: cron(18 2 * * ? *)
       #1h menos en pre
 
     environment:
