@@ -105,7 +105,7 @@ const createContentTabel = (listCards, elementTable) => {
         <td class="table-primary temp">${card.id}</td>
         <td class="table-primary temp">${card.name}</td>
         <td class="table-primary temp">${card.language}</td>
-        <td class="table-primary temp">${card.relase_at}</td>
+        <td class="table-primary temp">${card.released_at}</td>
         <td class="table-primary temp">${parseString(card.image_uris)}</td>
         <td class="table-primary temp">${card.collection}</td>
         <td class="table-primary temp">${card.collection_name}</td>
